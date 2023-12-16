@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BusinessLayer.Interfaces;
+using CommonLayer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ScrapeYahooFinanceInformationAPI.Controllers
@@ -7,10 +9,16 @@ namespace ScrapeYahooFinanceInformationAPI.Controllers
     [ApiController]
     public class YahooFinanceInfoController : ControllerBase
     {
+        ICollectData _collectData;
+        public YahooFinanceInfoController(ICollectData collectData)
+        { 
+            _collectData = collectData;
+        }
+
         [HttpGet]
-        public string Get(string tickers, DateTime dateTime)
+        public async Task<List<DisplayDataModel>> Get(string tickers, DateTime dateTime)
         {
-            return "Slobodan";
+            return await _collectData.GetData(tickers, dateTime);
         }
     }
 }
