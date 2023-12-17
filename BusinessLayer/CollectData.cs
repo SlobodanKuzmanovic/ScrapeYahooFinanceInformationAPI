@@ -16,19 +16,25 @@ namespace BusinessLayer
             _saveData = saveData;
         }
 
-        public async Task<List<DisplayDataModel>> GetData(string symbols, DateTime dateTime)
+        public async Task<ViewModel> GetData(string symbols, DateTime dateTime)
         {
-            List<DisplayDataModel> result = new List<DisplayDataModel>();
+            ViewModel result = new ViewModel();
 
-            var allSymbols = symbols.Split(',');
+            var allSymbols = symbols.Replace(" ", "").ToUpper().Split(',');
 
             foreach (var symbol in allSymbols) 
             {
+                var securities = await Yahoo.Symbols(symbol).QueryAsync();
+                if (securities.Count == 0)
+                {
+                    result.badData.Add(symbol);
+                    continue;
+                }
+
                 DatabaseDataModel data = new DatabaseDataModel();
                 data.Symbol = symbol;
                 data.date = dateTime;
-
-                var securities = await Yahoo.Symbols(symbol).QueryAsync();
+                
                 var fields = securities[symbol].Fields;
 
                 data.fullCompanyName = fields["LongName"];
@@ -48,7 +54,7 @@ namespace BusinessLayer
                     data.openPrice = history[0].Close;
                 }
                 _saveData.Save(data);
-                result.Add(PrepareData(data));
+                result.data.Add(new InnerViewModel(symbol, PrepareData(data)));
             }
 
 
