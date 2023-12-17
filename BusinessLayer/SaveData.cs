@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interfaces;
 using CommonLayer;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,11 +13,15 @@ namespace BusinessLayer
 {
     public class SaveData : ISaveData
     {
+        private readonly IConfiguration _configuration;
+
+        public SaveData(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public bool Save(DatabaseDataModel data)
         {
-            string connectionString = "Data Source=DESKTOP-R46BFPQ;Initial Catalog=YahooFinance;User ID=admin;Password=admin";
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("MyConnectionString")))
             {
                 connection.Open();
 
