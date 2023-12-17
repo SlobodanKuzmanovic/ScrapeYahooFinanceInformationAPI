@@ -11,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ICollectData, CollectData>();
+builder.Services.AddScoped<ISaveData, SaveData>();
 
 
 var app = builder.Build();

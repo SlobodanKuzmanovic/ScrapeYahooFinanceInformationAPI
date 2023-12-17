@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Interfaces;
 using CommonLayer;
 using Newtonsoft.Json;
+using System;
 using YahooFinanceApi;
 using static System.Net.WebRequestMethods;
 
@@ -8,6 +9,13 @@ namespace BusinessLayer
 {
     public class CollectData : ICollectData
     {
+        public ISaveData _saveData { get; set; }
+
+        public CollectData(ISaveData saveData)
+        {
+            _saveData = saveData;
+        }
+
         public async Task<List<DisplayDataModel>> GetData(string symbols, DateTime dateTime)
         {
             List<DisplayDataModel> result = new List<DisplayDataModel>();
@@ -16,15 +24,15 @@ namespace BusinessLayer
 
             foreach (var symbol in allSymbols) 
             {
-                DisplayDataModel data = new DisplayDataModel();
-
-                data.date = dateTime.ToString("dd.MM.yyyy.");
+                DatabaseDataModel data = new DatabaseDataModel();
+                data.Symbol = symbol;
+                data.date = dateTime;
 
                 var securities = await Yahoo.Symbols(symbol).QueryAsync();
-
                 var fields = securities[symbol].Fields;
+
                 data.fullCompanyName = fields["LongName"];
-                data.marcetCap = fields["MarketCap"].ToString("C");
+                data.marcetCap = fields["MarketCap"];
 
                 var profile = await GetAssetProfileAsync(symbol);
 
@@ -32,16 +40,17 @@ namespace BusinessLayer
                 data.headquartersCity = profile.body.city;
                 data.headquartersCountry = profile.body.country;
 
-
                 var history = await Yahoo.GetHistoricalAsync(symbol, dateTime, dateTime.AddDays(1), Period.Daily);
 
                 if (history.Count > 0)
                 {
-                    data.closePrice = history[0].Close.ToString("C");
-                    data.openPrice = history[0].Open.ToString("C");
+                    data.closePrice = history[0].Close;
+                    data.openPrice = history[0].Close;
                 }
-                result.Add(data);
+                _saveData.Save(data);
+                result.Add(PrepareData(data));
             }
+
 
             return result;
         }
@@ -73,6 +82,24 @@ namespace BusinessLayer
             }
 
             return root;
+        }
+
+        private DisplayDataModel PrepareData(DatabaseDataModel databaseData)
+        {
+            DisplayDataModel data = new DisplayDataModel()
+            {
+                fullCompanyName = databaseData.fullCompanyName,
+                marcetCap = databaseData.marcetCap.ToString("C"),
+                yearFounded = databaseData.yearFounded == null ? "//" : databaseData.yearFounded.ToString(),
+                numberOfEmployees = databaseData.numberOfEmployees,
+                headquartersCity = databaseData.headquartersCity,
+                headquartersCountry = databaseData.headquartersCountry,
+                date = databaseData.date.ToString("dd.MM.yyyy."),
+                closePrice = databaseData.closePrice.ToString("C"),
+                openPrice = databaseData.openPrice.ToString("C")
+            };
+
+            return data;
         }
     }
 }
