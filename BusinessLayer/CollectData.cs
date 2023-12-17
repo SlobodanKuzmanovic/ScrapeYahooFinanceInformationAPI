@@ -37,8 +37,8 @@ namespace BusinessLayer
 
                 if (history.Count > 0)
                 {
-                    data.closePrice = history[0].Close.ToString();
-                    data.openPrice = history[0].Open.ToString();
+                    data.closePrice = history[0].Close.ToString("C");
+                    data.openPrice = history[0].Open.ToString("C");
                 }
                 result.Add(data);
             }
