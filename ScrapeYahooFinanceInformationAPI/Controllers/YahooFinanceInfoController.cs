@@ -16,9 +16,9 @@ namespace ScrapeYahooFinanceInformationAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ViewModel> Get(string symbols, DateTime dateTime)
+        public async Task<ViewModel> Get(string symbols, DateTime date)
         {
-            return await _collectData.GetData(symbols, dateTime);
+            return await _collectData.GetData(symbols, date);
         }
     }
 }

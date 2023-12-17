@@ -9,6 +9,6 @@ namespace BusinessLayer.Interfaces
 {
     public interface ICollectData
     {
-        Task<ViewModel> GetData(string symbols, DateTime dateTime);
+        Task<ViewModel> GetData(string symbols, DateTime date);
     }
 }

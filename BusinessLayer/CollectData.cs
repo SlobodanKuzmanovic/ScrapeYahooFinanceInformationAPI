@@ -16,7 +16,7 @@ namespace BusinessLayer
             _saveData = saveData;
         }
 
-        public async Task<ViewModel> GetData(string symbols, DateTime dateTime)
+        public async Task<ViewModel> GetData(string symbols, DateTime date)
         {
             ViewModel result = new ViewModel();
 
@@ -33,7 +33,7 @@ namespace BusinessLayer
 
                 DatabaseDataModel data = new DatabaseDataModel();
                 data.Symbol = symbol;
-                data.date = dateTime;
+                data.date = date;
                 
                 var fields = securities[symbol].Fields;
 
@@ -46,7 +46,7 @@ namespace BusinessLayer
                 data.headquartersCity = profile.body.city;
                 data.headquartersCountry = profile.body.country;
 
-                var history = await Yahoo.GetHistoricalAsync(symbol, dateTime, dateTime.AddDays(1), Period.Daily);
+                var history = await Yahoo.GetHistoricalAsync(symbol, date, date.AddDays(1), Period.Daily);
 
                 if (history.Count > 0)
                 {
