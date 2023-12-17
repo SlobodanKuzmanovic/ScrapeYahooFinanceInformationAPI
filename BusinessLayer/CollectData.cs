@@ -54,7 +54,7 @@ namespace BusinessLayer
                     data.openPrice = history[0].Close;
                 }
                 _saveData.Save(data);
-                result.data.Add(new InnerViewModel(symbol, PrepareData(data)));
+                result.data.Add(new CorrectData(symbol, PrepareData(data)));
             }
 
 

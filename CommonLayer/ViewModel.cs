@@ -8,22 +8,22 @@ namespace CommonLayer
 {
     public class ViewModel
     {
-        public List<InnerViewModel> data { get; set; }
+        public List<CorrectData> data { get; set; }
         public List<string> badData { get; set; }
 
         public ViewModel()
         {
-            data = new List<InnerViewModel>();
+            data = new List<CorrectData>();
             badData = new List<string>();
         }
     }
 
-    public class InnerViewModel
+    public class CorrectData
     {
         public string symbol { get; set; }
         public DisplayDataModel data { get; set; }
 
-        public InnerViewModel(string symbol, DisplayDataModel data)
+        public CorrectData(string symbol, DisplayDataModel data)
         {
             this.symbol = symbol;
             this.data = data;
