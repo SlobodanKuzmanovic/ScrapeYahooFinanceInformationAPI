@@ -21,7 +21,7 @@ namespace BusinessLayer
         }
         public bool Save(DatabaseDataModel data)
         {
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("MyConnectionString")))
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("YahooDBConStr")))
             {
                 connection.Open();
 
